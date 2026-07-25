@@ -3,6 +3,14 @@ import { TorobProduct, SearchResponse } from "../types";
 
 const BASE_URL = "https://api.torob.com/v4/base-product";
 
+function resolveImageUrl(image?: string): string {
+  if (!image) return "";
+  if (image.startsWith("http")) return image;
+  if (image.startsWith("//")) return `https:${image}`;
+  if (image.startsWith("/")) return `https://api.torob.com${image}`;
+  return `https://api.torob.com/${image}`;
+}
+
 export async function searchProducts(
   query: string,
   category?: string,
@@ -54,7 +62,7 @@ export async function searchProducts(
       id: item.product_id || item.id || Math.random().toString(),
       name: item.name1 || item.name2 || item.title || "بدون نام",
       price: item.price || item.selling_price || 0,
-      image: item.images?.primary?.url || item.thumbnail || item.image || "",
+      image: resolveImageUrl(item.images?.primary?.url || item.thumbnail || item.image),
       link: item.url || `https://torob.com/p/${item.product_id || item.id}`,
       description:
         item.description ||
@@ -85,7 +93,7 @@ export async function getProductById(id: string): Promise<TorobProduct | null> {
       id: item.id || item.product_id,
       name: item.name1 || item.name2 || item.title || "بدون نام",
       price: item.price || item.selling_price || 0,
-      image: item.images?.primary?.url || item.thumbnail || item.image || "",
+      image: resolveImageUrl(item.images?.primary?.url || item.thumbnail || item.image),
       link: item.url || `https://torob.com/p/${item.id || item.product_id}`,
       description: item.description || item.more_info || "توضیحاتی موجود نیست.",
       category: item.category_name || item.category,

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { TorobProduct } from "../types";
 
@@ -8,14 +9,17 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <Link href={`/product/${product.id}`}>
       <div className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-300 h-full flex flex-col">
         <div className="relative pt-[75%] bg-gray-100">
-          {product.image ? (
+          {product.image && !imgError ? (
             <img
               src={product.image}
               alt={product.name}
+              onError={() => setImgError(true)}
               className="absolute top-0 left-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
